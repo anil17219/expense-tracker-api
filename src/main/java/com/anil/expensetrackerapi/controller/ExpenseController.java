@@ -2,7 +2,7 @@ package com.anil.expensetrackerapi.controller;
 
 import com.anil.expensetrackerapi.entity.Expense;
 import com.anil.expensetrackerapi.service.ExpenseService;
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
