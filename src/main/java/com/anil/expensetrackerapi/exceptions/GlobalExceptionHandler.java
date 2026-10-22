@@ -44,7 +44,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorObject> handleGeneralException(MethodArgumentTypeMismatchException ex, WebRequest request){
+    public ResponseEntity<ErrorObject> handleGeneralException(Exception ex, WebRequest request){
         ErrorObject  errorObject = new ErrorObject();
 
         errorObject.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
