@@ -7,7 +7,6 @@ import com.anil.expensetrackerapi.entity.UserModel;
 import com.anil.expensetrackerapi.security.CustomUserDetailsService;
 import com.anil.expensetrackerapi.service.UserService;
 import com.anil.expensetrackerapi.util.JwtTokenUtil;
-import jakarta.validation.Valid;
 import org.hibernate.validator.internal.engine.valueextraction.ValueExtractorManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 
 @RestController
 public class AuthController {
