@@ -24,7 +24,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public Page<Expense> getAllExpenses(Pageable page) {
-        return expenseRepo.findAll(page);
+        return expenseRepo.findByUserId(userService.getLoggedInUser().getId(), page);
     }
 
     @Override
