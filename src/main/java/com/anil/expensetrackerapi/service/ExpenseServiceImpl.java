@@ -29,7 +29,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public Expense getExpenseById(Long id) {
-        Optional<Expense> expense = expenseRepo.findById(id);
+        Optional<Expense> expense = expenseRepo.findByUserIdAndId(userService.getLoggedInUser().getId(), id);
         if (expense.isPresent()) {
              return expense.get();
         }
