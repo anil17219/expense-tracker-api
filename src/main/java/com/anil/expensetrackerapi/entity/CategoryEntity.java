@@ -32,10 +32,10 @@ public class CategoryEntity {
     private String categoryIcon;
 
     @CreationTimestamp
-    private Timestamp createAt;
+    private Timestamp createdAt;
 
     @UpdateTimestamp
-    private Timestamp updateAt;
+    private Timestamp updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

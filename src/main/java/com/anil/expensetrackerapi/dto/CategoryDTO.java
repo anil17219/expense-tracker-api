@@ -19,5 +19,5 @@ public class CategoryDTO {
     private String categoryIcon;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    private User user;
+    private UserDTO user;
 }
