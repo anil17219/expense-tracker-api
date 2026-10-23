@@ -6,6 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * JPA repository for category entity
+ * @author Anil Pals
+ * */
 public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> {
     /**
      * Finder method to retrieve the category by id
@@ -20,4 +24,11 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> 
      * @return Optional<CategoryEntity>
      * */
     Optional<CategoryEntity> findByUserIdAndCategoryId(Long id, String categoryId);
+
+    /**
+     * it checks whether category is present or not by user id and category name
+     * @param name, userId
+     * @return Optional<CategoryEntity>
+     * */
+    Optional<CategoryEntity> existsByNameAndUserId(String name, Long userId);
 }
