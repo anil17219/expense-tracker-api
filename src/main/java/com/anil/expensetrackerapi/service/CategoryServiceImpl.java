@@ -12,13 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService{
 
-    @Autowired
     private final CategoryRepository categoryRepository;
 
     @Autowired
@@ -30,8 +30,25 @@ public class CategoryServiceImpl implements CategoryService{
         return list.stream().map(categoryEntity -> mapToDTO(categoryEntity)).collect(Collectors.toList());
     }
 
+    @Override
+    public CategoryDTO saveCategory(CategoryDTO categoryDTO) {
+        CategoryEntity newCategory =  mapToEntity(categoryDTO);
+        newCategory =  categoryRepository.save(newCategory);
+        return (CategoryDTO) mapToDTO(newCategory);
+    }
+
+    private CategoryEntity mapToEntity(CategoryDTO categoryDTO) {
+        return CategoryEntity.builder()
+                .name(categoryDTO.getName())
+                .description(categoryDTO.getCategoryId())
+                .categoryIcon(categoryDTO.getCategoryIcon())
+                .categoryId(UUID.randomUUID().toString())
+                .build();
+    }
+
     private Object mapToDTO(CategoryEntity categoryEntity) {
         CategoryDTO.builder()
+
                 .categoryId(categoryEntity.getCategoryId())
                 .name(categoryEntity.getName())
                 .description(categoryEntity.getDescription())
