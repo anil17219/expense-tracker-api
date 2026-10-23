@@ -4,6 +4,7 @@ import com.anil.expensetrackerapi.dto.CategoryDTO;
 import com.anil.expensetrackerapi.dto.UserDTO;
 import com.anil.expensetrackerapi.entity.CategoryEntity;
 import com.anil.expensetrackerapi.entity.User;
+import com.anil.expensetrackerapi.exceptions.ResourceNotFoundException;
 import com.anil.expensetrackerapi.io.CategoryRequest;
 import com.anil.expensetrackerapi.repository.CategoryRepository;
 import com.anil.expensetrackerapi.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -35,6 +37,17 @@ public class CategoryServiceImpl implements CategoryService{
         CategoryEntity newCategory =  mapToEntity(categoryDTO);
         newCategory =  categoryRepository.save(newCategory);
         return mapToDTO(newCategory);
+
+    }
+
+    @Override
+    public void deleteCategory(String categoryId) {
+        Optional<CategoryEntity> optionalCategory = categoryRepository.findByUserIdAndCategoryId(userService.getLoggedInUser().getId(), categoryId);
+
+        if (!optionalCategory.isPresent()) {
+            throw new ResourceNotFoundException("Category not found for the id" + categoryId);
+        }
+        categoryRepository.delete(optionalCategory.get());
     }
 
     private CategoryEntity mapToEntity(CategoryDTO categoryDTO) {
