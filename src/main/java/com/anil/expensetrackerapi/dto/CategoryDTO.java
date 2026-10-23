@@ -16,7 +16,7 @@ public class CategoryDTO {
     private String categoryId;
     private String name;
     private String description;
-    private String icon;
+    private String categoryIcon;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private User user;
