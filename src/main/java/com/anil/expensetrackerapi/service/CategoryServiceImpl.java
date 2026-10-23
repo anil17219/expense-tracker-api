@@ -4,6 +4,7 @@ import com.anil.expensetrackerapi.dto.CategoryDTO;
 import com.anil.expensetrackerapi.dto.UserDTO;
 import com.anil.expensetrackerapi.entity.CategoryEntity;
 import com.anil.expensetrackerapi.entity.User;
+import com.anil.expensetrackerapi.exceptions.ItemExistsException;
 import com.anil.expensetrackerapi.exceptions.ResourceNotFoundException;
 import com.anil.expensetrackerapi.io.CategoryRequest;
 import com.anil.expensetrackerapi.repository.CategoryRepository;
@@ -43,10 +44,13 @@ public class CategoryServiceImpl implements CategoryService{
      * */
     @Override
     public CategoryDTO saveCategory(CategoryDTO categoryDTO) {
+       boolean isCategoryPresent =  categoryRepository.existsByNameAndUserId(categoryDTO.getName(), userService.getLoggedInUser().getId());
+        if (isCategoryPresent) {
+            throw new ItemExistsException("Category is already present for the name " + categoryDTO.getName());
+        }
         CategoryEntity newCategory =  mapToEntity(categoryDTO);
         newCategory =  categoryRepository.save(newCategory);
         return mapToDTO(newCategory);
-
     }
 
     /**
