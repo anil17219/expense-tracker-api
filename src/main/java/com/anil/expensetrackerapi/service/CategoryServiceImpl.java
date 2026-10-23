@@ -34,15 +34,16 @@ public class CategoryServiceImpl implements CategoryService{
     public CategoryDTO saveCategory(CategoryDTO categoryDTO) {
         CategoryEntity newCategory =  mapToEntity(categoryDTO);
         newCategory =  categoryRepository.save(newCategory);
-        return (CategoryDTO) mapToDTO(newCategory);
+        return mapToDTO(newCategory);
     }
 
     private CategoryEntity mapToEntity(CategoryDTO categoryDTO) {
         return CategoryEntity.builder()
                 .name(categoryDTO.getName())
-                .description(categoryDTO.getCategoryId())
+                .description(categoryDTO.getDescription())
                 .categoryIcon(categoryDTO.getCategoryIcon())
                 .categoryId(UUID.randomUUID().toString())
+                .user(userService.getLoggedInUser())
                 .build();
     }
 

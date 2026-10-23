@@ -29,7 +29,7 @@ public class CategoryController {
 
     private CategoryResponse mapToResponse(CategoryDTO categoryDTO) {
         return CategoryResponse.builder()
-                .categoryIcon(categoryDTO.getCategoryId())
+                .categoryId(categoryDTO.getCategoryId())
                 .name(categoryDTO.getName())
                 .description(categoryDTO.getDescription())
                 .categoryIcon(categoryDTO.getCategoryIcon())
@@ -42,7 +42,7 @@ public class CategoryController {
         return  CategoryDTO.builder()
                 .name(categoryRequest.getName())
                 .description(categoryRequest.getDescription())
-                .categoryIcon(categoryRequest.getCategoryIcon())
+                .categoryIcon(categoryRequest.getIcon())
                 .build();
     }
 }
