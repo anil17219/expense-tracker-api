@@ -46,8 +46,8 @@ public class CategoryServiceImpl implements CategoryService{
                 .build();
     }
 
-    private Object mapToDTO(CategoryEntity categoryEntity) {
-        CategoryDTO.builder()
+    private CategoryDTO mapToDTO(CategoryEntity categoryEntity) {
+        return CategoryDTO.builder()
 
                 .categoryId(categoryEntity.getCategoryId())
                 .name(categoryEntity.getName())
