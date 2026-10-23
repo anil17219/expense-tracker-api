@@ -26,12 +26,21 @@ public class CategoryServiceImpl implements CategoryService{
     @Autowired
     private final UserService userService;
 
+    /**
+     * This is for reading the categories from database
+     * @return list
+     * */
     @Override
     public List<CategoryDTO> getAllCategories() {
         List<CategoryEntity> list =  categoryRepository.findByUserId(userService.getLoggedInUser().getId());
         return list.stream().map(categoryEntity -> mapToDTO(categoryEntity)).collect(Collectors.toList());
     }
 
+    /**
+     * This is for creating new category
+     * @param categoryDTO
+     * @return CategoryDTO
+     * */
     @Override
     public CategoryDTO saveCategory(CategoryDTO categoryDTO) {
         CategoryEntity newCategory =  mapToEntity(categoryDTO);
@@ -40,6 +49,10 @@ public class CategoryServiceImpl implements CategoryService{
 
     }
 
+    /**
+     * This is for deleting category from database
+     * @param categoryId
+     * */
     @Override
     public void deleteCategory(String categoryId) {
         Optional<CategoryEntity> optionalCategory = categoryRepository.findByUserIdAndCategoryId(userService.getLoggedInUser().getId(), categoryId);
@@ -50,6 +63,11 @@ public class CategoryServiceImpl implements CategoryService{
         categoryRepository.delete(optionalCategory.get());
     }
 
+    /**
+     * Mapper method to convert dto to category Entity
+     * @param categoryDTO
+     * @return CategoryEntity
+     * */
     private CategoryEntity mapToEntity(CategoryDTO categoryDTO) {
         return CategoryEntity.builder()
                 .name(categoryDTO.getName())
@@ -60,6 +78,11 @@ public class CategoryServiceImpl implements CategoryService{
                 .build();
     }
 
+    /**
+     * Mapper method to convert category Entity to category DTO
+     * @param categoryEntity
+     * @return CategoryDTO
+     * */
     private CategoryDTO mapToDTO(CategoryEntity categoryEntity) {
         return CategoryDTO.builder()
 
@@ -75,6 +98,11 @@ public class CategoryServiceImpl implements CategoryService{
 
     }
 
+    /**
+     * Mapper method to convert user entity to user DTO
+     * @param user
+     * @return UserDTO
+     * */
     private UserDTO mapToUserDTO(User user) {
         return UserDTO.builder()
                 .email(user.getEmail())
