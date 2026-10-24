@@ -1,8 +1,13 @@
 package com.anil.expensetrackerapi.service;
 
+import com.anil.expensetrackerapi.dto.CategoryDTO;
+import com.anil.expensetrackerapi.dto.ExpenseDTO;
+import com.anil.expensetrackerapi.entity.CategoryEntity;
 import com.anil.expensetrackerapi.entity.Expense;
 import com.anil.expensetrackerapi.exceptions.ResourceNotFoundException;
+import com.anil.expensetrackerapi.repository.CategoryRepository;
 import com.anil.expensetrackerapi.repository.ExpenseRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,15 +17,15 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ExpenseServiceImpl implements ExpenseService {
 
-    @Autowired
     private ExpenseRepository expenseRepo;
-
-    @Autowired
     private UserService userService;
+    private CategoryRepository categoryRepository;
 
     @Override
     public Page<Expense> getAllExpenses(Pageable page) {
@@ -43,9 +48,50 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public Expense saveExpenseDetails(Expense expense) {
-        expense.setUser(userService.getLoggedInUser());
-        return expenseRepo.save(expense);
+    public ExpenseDTO saveExpenseDetails(ExpenseDTO expenseDTO) {
+        // Check the existence of category
+        Optional<CategoryEntity> optionalCategory = categoryRepository.findByUserIdAndCategoryId(userService.getLoggedInUser().getId(), expenseDTO.getCategoryId());
+        if (!optionalCategory.isPresent()) {
+            throw new ResourceNotFoundException("Category not found for the id " + expenseDTO.getCategoryId());
+        }
+        expenseDTO.setExpenseId(UUID.randomUUID().toString());
+        // map to Entity Object
+        Expense newExpense =  mapToEntity(expenseDTO);
+        // save to the database
+        newExpense.setCategory(optionalCategory.get());
+        newExpense.setUser(userService.getLoggedInUser());
+        newExpense =  expenseRepo.save(newExpense);
+        // map to Response Object
+        return mapToDTO(newExpense);
+    }
+
+    private ExpenseDTO mapToDTO(Expense newExpense) {
+        return ExpenseDTO.builder()
+                .expenseId(newExpense.getExpenseId())
+                .name(newExpense.getName())
+                .description(newExpense.getDescription())
+                .amount(newExpense.getAmount())
+                .date(newExpense.getDate())
+                .createdAt(newExpense.getCreatedAt())
+                .updatedAt(newExpense.getUpdatedAt())
+                .categoryDTO(mapToCategoryDTO(newExpense.getCategory()))
+                .build();
+    }
+
+    private CategoryDTO mapToCategoryDTO(CategoryEntity category) {
+        return CategoryDTO.builder()
+                .name(category.getName())
+                .categoryId(category.getCategoryId())
+                .build();
+    }
+
+    private Expense mapToEntity(ExpenseDTO expenseDTO) {
+        return Expense.builder()
+                .expenseId(expenseDTO.getExpenseId())
+                .name(expenseDTO.getName())
+                .description(expenseDTO.getDescription())
+                .amount(expenseDTO.getAmount())
+                .build();
     }
 
     @Override

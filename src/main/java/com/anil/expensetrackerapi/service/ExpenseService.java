@@ -1,5 +1,6 @@
 package com.anil.expensetrackerapi.service;
 
+import com.anil.expensetrackerapi.dto.ExpenseDTO;
 import com.anil.expensetrackerapi.entity.Expense;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +13,7 @@ public interface ExpenseService {
     Page<Expense> getAllExpenses(Pageable page);
     Expense getExpenseById(Long id);
     void deleteExpenseById(Long id);
-    Expense saveExpenseDetails(Expense expense);
+    ExpenseDTO saveExpenseDetails(ExpenseDTO expenseDTO);
     Expense updateExpenseDetails(Long id, Expense expense);
     List<Expense> readyByCategory(String category, Pageable page);
     List<Expense> readByName(String keyword, Pageable page);
