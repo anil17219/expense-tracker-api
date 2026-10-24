@@ -23,8 +23,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ExpenseServiceImpl implements ExpenseService {
 
+    @Autowired
     private ExpenseRepository expenseRepo;
+    @Autowired
     private UserService userService;
+    @Autowired
     private CategoryRepository categoryRepository;
 
     @Override
@@ -61,6 +64,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         newExpense.setCategory(optionalCategory.get());
         newExpense.setUser(userService.getLoggedInUser());
         newExpense =  expenseRepo.save(newExpense);
+
         // map to Response Object
         return mapToDTO(newExpense);
     }
@@ -91,6 +95,7 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .name(expenseDTO.getName())
                 .description(expenseDTO.getDescription())
                 .amount(expenseDTO.getAmount())
+                .date(expenseDTO.getDate())
                 .build();
     }
 
