@@ -3,6 +3,7 @@ package com.anil.expensetrackerapi.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,7 +16,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 
-
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,6 +27,9 @@ public class Expense {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
+    private String expenseId;
+
     @Column(name = "expense_name")
     private String name;
 
@@ -34,7 +38,11 @@ public class Expense {
     @Column(name = "expense_amount")
     private BigDecimal amount;
 
-    private String category;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @JsonIgnore
+    private CategoryEntity category;
 
     private Date date;
 
