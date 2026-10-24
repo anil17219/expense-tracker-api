@@ -7,6 +7,7 @@ import com.anil.expensetrackerapi.entity.Expense;
 import com.anil.expensetrackerapi.exceptions.ResourceNotFoundException;
 import com.anil.expensetrackerapi.repository.CategoryRepository;
 import com.anil.expensetrackerapi.repository.ExpenseRepository;
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,17 +39,23 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public Expense getExpenseById(String expenseId) {
+    public ExpenseDTO getExpenseById(String expenseId) {
+        Expense existingExpense = getExpenseEntity(expenseId);
+        return mapToDTO(existingExpense);
+    }
+
+    @Nonnull
+    private Expense getExpenseEntity(String expenseId) {
         Optional<Expense> expense = expenseRepo.findByUserIdAndExpenseId(userService.getLoggedInUser().getId(), expenseId);
-        if (expense.isPresent()) {
-             return expense.get();
+        if (!expense.isPresent()) {
+            throw new ResourceNotFoundException("Expense is not found for the id " + expenseId);
         }
-        throw new ResourceNotFoundException("Expense is not found for the id " + expenseId);
+        return expense.get();
     }
 
     @Override
     public void deleteExpenseById(String expenseId) {
-        Expense expense = getExpenseById(expenseId);
+        Expense expense = getExpenseEntity(expenseId);
         expenseRepo.delete(expense);
     }
 
@@ -102,15 +109,22 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public Expense updateExpenseDetails(String expenseId, Expense expense) {
-        Expense existingExpense = getExpenseById(expenseId);
-        existingExpense.setName(expense.getName() != null ? expense.getName() : existingExpense.getName());
-        existingExpense.setDescription(expense.getDescription() != null ? expense.getDescription() : existingExpense.getDescription());
-        existingExpense.setAmount(expense.getAmount() != null ? expense.getAmount() : existingExpense.getAmount());
-        existingExpense.setCategory(expense.getCategory() != null ? expense.getCategory() : existingExpense.getCategory());
-        existingExpense.setDate(expense.getDate() != null ? expense.getDate() : existingExpense.getDate());
+    public ExpenseDTO updateExpenseDetails(String expenseId, ExpenseDTO expenseDTO) {
+        Expense existingExpense = getExpenseEntity(expenseId);
+        if (expenseDTO.getCategoryId() != null) {
+            Optional<CategoryEntity> optionalCategory = categoryRepository.findByUserIdAndCategoryId(userService.getLoggedInUser().getId(), expenseDTO.getCategoryId());
+            if (!optionalCategory.isPresent()) {
+                throw new ResourceNotFoundException("Category not found for the id " + expenseDTO.getCategoryId());
+            }
+            existingExpense.setCategory(optionalCategory.get());
+        }
+        existingExpense.setName(expenseDTO.getName() != null ? expenseDTO.getName() : existingExpense.getName());
+        existingExpense.setDescription(expenseDTO.getDescription() != null ? expenseDTO.getDescription() : existingExpense.getDescription());
+        existingExpense.setAmount(expenseDTO.getAmount() != null ? expenseDTO.getAmount() : existingExpense.getAmount());
+        existingExpense.setDate(expenseDTO.getDate() != null ? expenseDTO.getDate() : existingExpense.getDate());
 
-        return expenseRepo.save(existingExpense);
+        existingExpense = expenseRepo.save(existingExpense);
+        return mapToDTO(existingExpense);
     }
 
     @Override
