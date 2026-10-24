@@ -43,7 +43,7 @@ public class Expense {
     @NotBlank(message = "Category should not be null")
     private String category;
 
-    @NotNull(message = "Date must not be nulll")
+    @NotNull(message = "Date must not be null")
     private Date date;
 
     @Column(name = "created_at", nullable = false, updatable = false)
