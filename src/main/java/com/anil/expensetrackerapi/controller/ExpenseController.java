@@ -3,7 +3,6 @@ package com.anil.expensetrackerapi.controller;
 import com.anil.expensetrackerapi.dto.CategoryDTO;
 import com.anil.expensetrackerapi.dto.ExpenseDTO;
 import com.anil.expensetrackerapi.entity.Expense;
-import com.anil.expensetrackerapi.io.CategoryRequest;
 import com.anil.expensetrackerapi.io.CategoryResponse;
 import com.anil.expensetrackerapi.io.ExpenseRequest;
 import com.anil.expensetrackerapi.io.ExpenseResponse;
@@ -32,15 +31,15 @@ public class ExpenseController {
         return listOfExpenses.stream().map(expenseDTO -> mapToResponse(expenseDTO)).collect(Collectors.toList());
     }
 
-    @GetMapping("/expenses/{id}")
-    public Expense getExpenseById(@PathVariable Long id){
-        return expenseService.getExpenseById(id);
+    @GetMapping("/expenses/{expenseId}")
+    public Expense getExpenseById(@PathVariable String expenseId){
+        return expenseService.getExpenseById(expenseId);
     }
 
     @DeleteMapping("/expenses")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void deleteExpenseById(@RequestParam Long id){
-        expenseService.deleteExpenseById(id);
+    public void deleteExpenseById(@RequestParam String expenseId){
+        expenseService.deleteExpenseById(expenseId);
     }
 
     @PostMapping("/expenses")
@@ -82,8 +81,8 @@ public class ExpenseController {
     }
 
     @PutMapping("/expenses/{id}")
-    public Expense updateExpenseDetails(@RequestBody Expense expense, @PathVariable Long id) {
-        return expenseService.updateExpenseDetails(id, expense);
+    public Expense updateExpenseDetails(@RequestBody Expense expense, @PathVariable String expenseId) {
+        return expenseService.updateExpenseDetails(expenseId, expense);
     }
 
     @GetMapping("/expenses/category")

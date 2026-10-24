@@ -25,6 +25,6 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     Page<Expense> findByUserId(Long userId, Pageable page);
 
     // SELECT * FROM tbl_expenses WHERE userId = ? AND id = ?
-    Optional<Expense> findByUserIdAndId(Long userId, Long expenseId);
+    Optional<Expense> findByUserIdAndExpenseId(Long userId, String expenseId);
 
 }

@@ -11,10 +11,10 @@ import java.util.List;
 
 public interface ExpenseService {
     List<ExpenseDTO> getAllExpenses(Pageable page);
-    Expense getExpenseById(Long id);
-    void deleteExpenseById(Long id);
+    Expense getExpenseById(String id);
+    void deleteExpenseById(String id);
     ExpenseDTO saveExpenseDetails(ExpenseDTO expenseDTO);
-    Expense updateExpenseDetails(Long id, Expense expense);
+    Expense updateExpenseDetails(String id, Expense expense);
     List<Expense> readyByCategory(String category, Pageable page);
     List<Expense> readByName(String keyword, Pageable page);
     List<Expense> readByDate(Date startDate, Date endDate, Pageable page);

@@ -38,17 +38,17 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public Expense getExpenseById(Long id) {
-        Optional<Expense> expense = expenseRepo.findByUserIdAndId(userService.getLoggedInUser().getId(), id);
+    public Expense getExpenseById(String expenseId) {
+        Optional<Expense> expense = expenseRepo.findByUserIdAndExpenseId(userService.getLoggedInUser().getId(), expenseId);
         if (expense.isPresent()) {
              return expense.get();
         }
-        throw new ResourceNotFoundException("Expense is not found for the id " + id);
+        throw new ResourceNotFoundException("Expense is not found for the id " + expenseId);
     }
 
     @Override
-    public void deleteExpenseById(Long id) {
-        Expense expense = getExpenseById(id);
+    public void deleteExpenseById(String expenseId) {
+        Expense expense = getExpenseById(expenseId);
         expenseRepo.delete(expense);
     }
 
@@ -102,8 +102,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public Expense updateExpenseDetails(Long id, Expense expense) {
-        Expense existingExpense = getExpenseById(id);
+    public Expense updateExpenseDetails(String expenseId, Expense expense) {
+        Expense existingExpense = getExpenseById(expenseId);
         existingExpense.setName(expense.getName() != null ? expense.getName() : existingExpense.getName());
         existingExpense.setDescription(expense.getDescription() != null ? expense.getDescription() : existingExpense.getDescription());
         existingExpense.setAmount(expense.getAmount() != null ? expense.getAmount() : existingExpense.getAmount());
