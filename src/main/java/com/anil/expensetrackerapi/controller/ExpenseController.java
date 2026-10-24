@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class ExpenseController {
@@ -26,8 +27,9 @@ public class ExpenseController {
     private ExpenseService expenseService;
 
     @GetMapping("/expenses")
-    public List<Expense> getAllExpenses(Pageable page) {
-        return  expenseService.getAllExpenses(page).toList();
+    public List<ExpenseResponse> getAllExpenses(Pageable page) {
+        List<ExpenseDTO> listOfExpenses =  expenseService.getAllExpenses(page);
+        return listOfExpenses.stream().map(expenseDTO -> mapToResponse(expenseDTO)).collect(Collectors.toList());
     }
 
     @GetMapping("/expenses/{id}")

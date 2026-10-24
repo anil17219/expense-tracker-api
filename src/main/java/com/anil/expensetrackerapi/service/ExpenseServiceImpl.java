@@ -18,6 +18,7 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,8 +32,9 @@ public class ExpenseServiceImpl implements ExpenseService {
     private CategoryRepository categoryRepository;
 
     @Override
-    public Page<Expense> getAllExpenses(Pageable page) {
-        return expenseRepo.findByUserId(userService.getLoggedInUser().getId(), page);
+    public List<ExpenseDTO> getAllExpenses(Pageable page) {
+        List<Expense> listOfExpenses = expenseRepo.findByUserId(userService.getLoggedInUser().getId(), page).toList();
+        return listOfExpenses.stream().map(expense -> mapToDTO(expense)).collect(Collectors.toList());
     }
 
     @Override
