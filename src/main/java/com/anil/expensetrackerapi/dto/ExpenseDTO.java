@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.lang.reflect.Executable;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -24,4 +25,5 @@ public class ExpenseDTO {
     private Timestamp updatedAt;
     private CategoryDTO categoryDTO;
     private UserDTO userDTO;
+    private String categoryId;
 }
