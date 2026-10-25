@@ -109,11 +109,19 @@
 		</dependency>
 
 		<!-- MySQL JDBC driver (current artifact; replaces mysql-connector-java) -->
-		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.mysql</groupId>-->
+<!--			<artifactId>mysql-connector-j</artifactId>-->
+<!--			<scope>runtime</scope>-->
+<!--		</dependency>-->
+
+		<!-- MySQL JDBC driver (current artifact; replaces mysql-connector-java) -->
+			<dependency>
+				<groupId>org.postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<scope>runtime</scope>
+			</dependency>
+
 
 		<!-- Lombok: reduces boilerplate (getters, setters, builders, etc.) -->
 		<dependency>
