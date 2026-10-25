@@ -3,9 +3,11 @@ package com.anil.expensetrackerapi.security;
 import com.anil.expensetrackerapi.util.JwtTokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -13,6 +15,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+
 import java.io.IOException;
 
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -22,6 +26,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
     CustomUserDetailsService userDetailsService;
+
+    @Qualifier("handlerExceptionResolver")
+    @Autowired
+    private HandlerExceptionResolver resolver;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -38,6 +46,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                  throw new RuntimeException("Unable to get JWT token");
              } catch (ExpiredJwtException e) {
                  throw new RuntimeException("JWT token has expired");
+             } catch (UsernameNotFoundException e) {
+                 resolver.resolveException(request, response, null, e);
+                 return;
              }
         }
 

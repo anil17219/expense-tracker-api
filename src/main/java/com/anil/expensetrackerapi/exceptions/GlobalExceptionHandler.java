@@ -1,10 +1,13 @@
 package com.anil.expensetrackerapi.exceptions;
 
 import com.anil.expensetrackerapi.entity.ErrorObject;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -85,6 +88,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         errorObject.setTimeStamp(new Date());
 
         return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler({UsernameNotFoundException.class, ExpiredJwtException.class, JwtException.class})
+    public ResponseEntity<ErrorObject> handleAuthExceptions(Exception ex, WebRequest request) {
+        ErrorObject errorObject = new ErrorObject();
+        errorObject.setStatusCode(HttpStatus.UNAUTHORIZED.value());
+        errorObject.setMessage(ex.getMessage());
+        errorObject.setTimeStamp(new Date());
+        return new ResponseEntity<>(errorObject, HttpStatus.UNAUTHORIZED);
     }
 
 }
