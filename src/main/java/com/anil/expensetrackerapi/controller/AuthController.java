@@ -5,8 +5,10 @@ import com.anil.expensetrackerapi.entity.JwtResponse;
 import com.anil.expensetrackerapi.entity.User;
 import com.anil.expensetrackerapi.entity.UserModel;
 import com.anil.expensetrackerapi.security.CustomUserDetailsService;
+import com.anil.expensetrackerapi.service.BlackListService;
 import com.anil.expensetrackerapi.service.UserService;
 import com.anil.expensetrackerapi.util.JwtTokenUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.hibernate.validator.internal.engine.valueextraction.ValueExtractorManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -41,6 +44,9 @@ public class AuthController {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private BlackListService blackListService;
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody AuthModel authModel) throws Exception {
@@ -66,4 +72,21 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<User> save(@Valid @RequestBody UserModel user) {
         return new ResponseEntity<User>(userService.createUser(user), HttpStatus.CREATED);
-    }}
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/signout")
+    public void logout(HttpServletRequest request){
+        String jwtToken =  extactJwtTokenFromRequest(request);
+        blackListService.addTokenToBlacklist(jwtToken);
+    }
+
+    private String extactJwtTokenFromRequest(HttpServletRequest request) {
+         String bearerToken = request.getHeader("Authorization");
+         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+         }
+         return null;
+    }
+
+}
