@@ -1,5 +1,6 @@
 package com.anil.expensetrackerapi.security;
 
+import com.anil.expensetrackerapi.service.BlackListService;
 import com.anil.expensetrackerapi.util.JwtTokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     CustomUserDetailsService userDetailsService;
 
+    @Autowired
+    BlackListService blackListService;
+
     @Qualifier("handlerExceptionResolver")
     @Autowired
     private HandlerExceptionResolver resolver;
@@ -39,6 +43,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String username = null;
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
              jwtToken =  requestTokenHeader.substring(7);
+
+             if(jwtToken != null && blackListService.isTokenBlacklisted(jwtToken)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+             }
 
              try {
                  username =   jwtTokenUtil.getUsernameFromToken(jwtToken);
