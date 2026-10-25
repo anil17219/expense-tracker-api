@@ -21,6 +21,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static ch.qos.logback.core.joran.spi.ConsoleTarget.findByName;
+
 @Service
 @RequiredArgsConstructor
 public class ExpenseServiceImpl implements ExpenseService {
@@ -128,17 +130,23 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public List<Expense> readyByCategory(String category, Pageable page) {
-        return expenseRepo.findByUserIdAndCategory(userService.getLoggedInUser().getId(), category, page).toList();
+    public List<ExpenseDTO> readyByCategory(String category, Pageable page) {
+        Optional<CategoryEntity> optionalCategory = categoryRepository.findByNameAndUserId(category, userService.getLoggedInUser().getId());
+        if (!optionalCategory.isPresent()) {
+            throw new ResourceNotFoundException("Category not found for the name " + category);
+        }
+        List<Expense> list =  expenseRepo.findByUserIdAndCategoryId(userService.getLoggedInUser().getId(), optionalCategory.get().getId(), page).toList();
+        return list.stream().map(expense -> mapToDTO(expense)).collect(Collectors.toList());
     }
 
     @Override
-    public List<Expense> readByName(String keyword, Pageable page) {
-        return expenseRepo.findByUserIdAndNameContaining(userService.getLoggedInUser().getId(), keyword, page).toList();
+    public List<ExpenseDTO> readByName(String keyword, Pageable page) {
+        List<Expense> list =  expenseRepo.findByUserIdAndNameContaining(userService.getLoggedInUser().getId(), keyword, page).toList();
+        return list.stream().map(expense -> mapToDTO(expense)).collect(Collectors.toList());
     }
 
     @Override
-    public List<Expense> readByDate(Date startDate, Date endDate, Pageable page) {
+    public List<ExpenseDTO> readByDate(Date startDate, Date endDate, Pageable page) {
         if (startDate == null) {
             startDate = new Date(0);
         }
@@ -146,7 +154,8 @@ public class ExpenseServiceImpl implements ExpenseService {
             endDate = new Date(System.currentTimeMillis());
         }
 
-         return expenseRepo.findByUserIdAndDateBetween(userService.getLoggedInUser().getId(), startDate, endDate, page).toList();
+        List<Expense> list = expenseRepo.findByUserIdAndDateBetween(userService.getLoggedInUser().getId(), startDate, endDate, page).toList();
+        return list.stream().map(expense -> mapToDTO(expense)).collect(Collectors.toList());
     }
 
 

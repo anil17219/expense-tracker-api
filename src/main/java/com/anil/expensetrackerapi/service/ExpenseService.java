@@ -14,7 +14,7 @@ public interface ExpenseService {
     void deleteExpenseById(String id);
     ExpenseDTO saveExpenseDetails(ExpenseDTO expenseDTO);
     ExpenseDTO updateExpenseDetails(String expenseId, ExpenseDTO expenseDTO);
-    List<Expense> readyByCategory(String category, Pageable page);
-    List<Expense> readByName(String keyword, Pageable page);
-    List<Expense> readByDate(Date startDate, Date endDate, Pageable page);
+    List<ExpenseDTO> readyByCategory(String category, Pageable page);
+    List<ExpenseDTO> readByName(String keyword, Pageable page);
+    List<ExpenseDTO> readByDate(Date startDate, Date endDate, Pageable page);
 }

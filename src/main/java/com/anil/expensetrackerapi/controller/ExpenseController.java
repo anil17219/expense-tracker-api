@@ -2,7 +2,6 @@ package com.anil.expensetrackerapi.controller;
 
 import com.anil.expensetrackerapi.dto.CategoryDTO;
 import com.anil.expensetrackerapi.dto.ExpenseDTO;
-import com.anil.expensetrackerapi.entity.Expense;
 import com.anil.expensetrackerapi.io.CategoryResponse;
 import com.anil.expensetrackerapi.io.ExpenseRequest;
 import com.anil.expensetrackerapi.io.ExpenseResponse;
@@ -89,17 +88,20 @@ public class ExpenseController {
     }
 
     @GetMapping("/expenses/category")
-    public List<Expense> getExpensesByCategory(@RequestParam String category, Pageable page) {
-        return expenseService.readyByCategory(category, page);
+    public List<ExpenseResponse> getExpensesByCategory(@RequestParam String category, Pageable page) {
+        List<ExpenseDTO> list =  expenseService.readyByCategory(category, page);
+        return list.stream().map(expenseDTO -> mapToResponse(expenseDTO)).collect(Collectors.toList());
     }
 
     @GetMapping("/expenses/name")
-    public List<Expense> getExpensesByName(@RequestParam String keyword, Pageable page) {
-        return expenseService.readByName(keyword, page);
+    public List<ExpenseResponse> getExpensesByName(@RequestParam String keyword, Pageable page) {
+        List<ExpenseDTO> list = expenseService.readByName(keyword, page);
+        return list.stream().map(expenseDTO -> mapToResponse(expenseDTO)).collect(Collectors.toList());
     }
 
     @GetMapping("/expenses/date")
-    public List<Expense> getExpensesByDate(@RequestParam (required = false) Date startDate, @RequestParam (required = false) Date endDate, Pageable page) {
-        return expenseService.readByDate(startDate, endDate, page);
+    public List<ExpenseResponse> getExpensesByDate(@RequestParam (required = false) Date startDate, @RequestParam (required = false) Date endDate, Pageable page) {
+        List<ExpenseDTO> list = expenseService.readByDate(startDate, endDate, page);
+        return list.stream().map(expenseDTO -> mapToResponse(expenseDTO)).collect(Collectors.toList());
     }
 }

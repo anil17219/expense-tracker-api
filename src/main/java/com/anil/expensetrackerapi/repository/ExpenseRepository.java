@@ -15,6 +15,8 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     // SELECT * FROM tbl_expenses WHERE category = ?
     Page<Expense> findByUserIdAndCategory(Long userId, String category, Pageable page);
 
+    Page<Expense> findByUserIdAndCategoryId(Long userId, Long categoryId, Pageable page);
+
     // SELECT * FROM tbl_expenses WHERE name LIKE '%keyword%'
     Page<Expense> findByUserIdAndNameContaining(Long userId, String keyword, Pageable page);
 
